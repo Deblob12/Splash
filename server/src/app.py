@@ -1,5 +1,7 @@
 from flask import Flask, request, redirect
 from twilio.twiml.messaging_response import MessagingResponse
+import json
+
 
 from config import firebase
 
@@ -11,6 +13,9 @@ db = firebase.database()
 def sms_reply():
     """Respond to incoming calls with a simple text message."""
     # Start our TwiML response
+    number = request.form['From']
+    message_body = request.form['Body']
+
     resp = MessagingResponse()
 
     # Add a message
