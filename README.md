@@ -18,6 +18,7 @@ Feel free to also ask Splash about any fun recommendations along your trip. And 
 
 Splash is built with Python but also relies largely on:
 * **Twilio API**, powering the entire automated messaging framework
+* **IBM Watson**, enabling Splash to serve as a conversational chat bot
 * **Venmo API**, allowing Splash to complete the automated transaction flow
 * **Firebase Realtime Database**
 * and **Google Cloud Platform**
