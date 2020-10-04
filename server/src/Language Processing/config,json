@@ -1,0 +1,8 @@
+{
+  "nlu_iam_key": "DQSBRRNuGPDQaJLIP9xDts1r_DUAqGhNMGjP65-lAlMi",
+  "url":"https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/93c69b8a-599f-470c-ba51-cbe944a21173",
+  "keywords": true,
+  "concepts": true,
+  "keyword_limit":5,
+  "concept_limit": 5,
+}
