@@ -3,6 +3,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 import json
 
 from config import firebase
+from group import Group
 
 
 app = Flask(__name__)
@@ -52,6 +53,8 @@ def sms_reply():
 def random():
     number = 1234567890
     message_body = '$10 for gas'
+    g = Group('group1')
+    g.push_charges('Something')
     return 'Hello World'
 
 

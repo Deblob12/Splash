@@ -9,6 +9,7 @@ class Group:
         self.total = 0
         self.members = []
         self.access_tokens = []
+        self.transactions = {}
         self.group_ref = self.db.child('groups').child(self.group)
         self.members_ref = members_ref = self.group_ref.child('members')
 
@@ -21,16 +22,16 @@ class Group:
 
     def add_member(self, number, name):
         self.members_ref.child(str(number)).set({
-            'name': name,
-            'balance': 0
+            'name': name
+            # 'balance': 0
         })
         self.members.append(number)
 
-    def update_balance(self, number, amount):
-        current = self.members_ref.child(str(number)).child('balance')
-        self.members_ref.child(str(number)).update({
-            'balance': current + amount
-        })
+    # def update_balance(self, number, amount):
+    #     current = self.members_ref.child(str(number)).child('balance')
+    #     self.members_ref.child(str(number)).update({
+    #         'balance': current + amount
+    #     })
 
     # allocation is a dictionary {name: percent}
     def create_charge(self, charge, split_equally, allocation=None):
@@ -42,22 +43,13 @@ class Group:
 
         if split_equally:
             for number in members:
-                self.update_balance(number, charge / count)
+                if number != payer:
+                    self.transactions[(payer, number)] = charge / count
 
     def push_charges(self, message_body):
-        all_balances = 0
-        for number in self.members:
-            all_balances += self.members_ref.chlid(str(number)).child('balance')
-        remainder = self.total - all_balances
+        for sender, receiver in self.transactions:
+            self.charge(sender, receiver, transactions[(sender, receiver)])
 
-        r_index = randint(0, len(members))
-        self.update_balance(members[r_index], remainder)
-
-        for number in members:
-            balance = self.members_ref.child(str(number)).child('balance')
-            # Charge venmow with member balance
-
-        return None
 
     def charge(self, user1, user2, amount):
         accesstoken1 = None
@@ -75,5 +67,5 @@ class Group:
             client1.payment.request_money(amount, "house expenses", user_id2)
         else:
             client2.payment.request_money(-amount, "house expenses", user_id1)
-        
+
 
