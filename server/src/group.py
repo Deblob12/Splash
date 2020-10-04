@@ -1,4 +1,5 @@
 from config import firebase
+from venmo_api import Client
 
 
 class Group:
@@ -7,13 +8,16 @@ class Group:
         self.group = group
         self.total = 0
         self.members = []
+        self.access_tokens = []
         self.group_ref = self.db.child('groups').child(self.group)
         self.members_ref = members_ref = self.group_ref.child('members')
 
-    def venmo_login(self, number, name):
+    def venmo_login(self, number, name, username, password):
         # Log the user in question into Venmo
         # Modify the arguments to pass in other credentials
-        return None
+        access_token = Client.get_access_token(username=username,
+                                       password=password)
+        self.access_tokens.append((name, number, access_token))
 
     def add_member(self, number, name):
         self.members_ref.child(str(number)).set({
@@ -54,3 +58,22 @@ class Group:
             # Charge venmow with member balance
 
         return None
+
+    def charge(self, user1, user2, amount):
+        accesstoken1 = None
+        accesstoken2 = None
+        for user in self.access_tokens:
+            if user[1] == user1:
+                accesstoken1 = user[2]
+            elif user[1] == user2:
+                accesstoken2 = user[1]
+        client1 = Client(accesstoken1)
+        client2 = Client(accesstoken2)
+        user_id1 = client1.__profile.id
+        user_id2 = client2.__profile.id
+        if amount > 0:
+            client1.payment.request_money(amount, "house expenses", user_id2)
+        else:
+            client2.payment.request_money(-amount, "house expenses", user_id1)
+        
+
