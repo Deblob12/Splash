@@ -10,40 +10,47 @@ class Group:
         self.group_ref = self.db.child('groups').child(self.group)
         self.members_ref = members_ref = self.group_ref.child('members')
 
-    def extract(self, message_body):
-        print('From another class')
-        self.db.child('members').child(1234567890).child('name').set('John Smith')
-        self.db.child('members').child(1234567890).child('Other').set('From the other class')
-        return 10
-
-    def venmo_login(self, message_body):
+    def venmo_login(self, number, name):
+        # Log the user in question into Venmo
+        # Modify the arguments to pass in other credentials
         return None
 
-    def add_member(self, group, number, name):
+    def add_member(self, number, name):
         self.members_ref.child(str(number)).set({
             'name': name,
             'balance': 0
         })
         self.members.append(number)
 
+    def update_balance(self, number, amount):
+        current = self.members_ref.child(str(number)).child('balance')
+        self.members_ref.child(str(number)).update({
+            'balance': current + amount
+        })
+
     # allocation is a dictionary {name: percent}
-    def create_charge(self, group, charge, split_equally, allocation=None):
+    def create_charge(self, charge, split_equally, allocation=None):
         count = len(members)
         if count == 0:
             print('Need to add member!')
             return
-
         self.total += charge
 
         if split_equally:
             for number in members:
-                current = self.members.ref.child(str(number)).child('balance')
-                self.members_ref.child(str(number)).update({
-                    'balance': current + charge / count
-                })
+                self.update_balance(number, charge / count)
 
     def push_charges(self, message_body):
-        return None
+        all_balances = 0
+        for number in self.members:
+            all_balances += self.members_ref.chlid(str(number)).child('balance')
+        remainder = self.total - all_balances
 
-    def end(self, message_body):
+        r_index = randint(0, len(members))
+        self.update_balance(members[r_index], remainder)
+
+        for number in members:
+            balance = self.members_ref.child(str(number)).child('balance')
+            # Charge venmow with member balance
+
         return None
