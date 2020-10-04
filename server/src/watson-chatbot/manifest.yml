@@ -1,0 +1,23 @@
+---
+declared-services:
+  wbc-assistant-service:
+    label: conversation
+    plan: free
+  wbc-discovery-service:
+    label: discovery
+    plan: lite
+  wbc-natural-language-understanding-service:
+    label: natural-language-understanding
+    plan: free
+applications:
+- path: .
+  memory: 256M
+  instances: 1
+  name: watsonbankingchatbot
+  disk_quota: 256M
+  random-route: false
+  timeout: 180
+  services:
+  - wbc-assistant-service
+  - wbc-natural-language-understanding-service
+  - wbc-discovery-service
