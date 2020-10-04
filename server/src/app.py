@@ -3,14 +3,10 @@ from twilio.twiml.messaging_response import MessagingResponse
 import json
 
 from config import firebase
-from messenger import Messenger
 
 
 app = Flask(__name__)
-
-def venmo_login(message_body):
-    return None
-
+group_count = 0
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
@@ -29,20 +25,22 @@ def sms_reply():
 
     msg = Messenger()
 
-    if '1' in message_body:
-        msg.venmo_login(message_body)
-    elif '2' in message_body:
-        msg.create_group(message_body)
-    elif '3' in message_body:
-        msg.add_member(message_body)
-    elif '4' in message_body:
-        msg.create_charge(message_body)
-    elif '5' in message_body:
-        msg.push_charges(message_body)
-    elif '6' in message_body:
-        msg.end(message_body)
-    else:
-        response_body = 'Please specify one of the options!'
+    # respone_body = ''
+
+    # if '1' in message_body:
+    #     msg.venmo_login(message_body)
+    # elif '2' in message_body:
+    #     msg.create_group(message_body)
+    # elif '3' in message_body:
+    #     msg.add_member(message_body)
+    # elif '4' in message_body:
+    #     msg.create_charge(message_body)
+    # elif '5' in message_body:
+    #     msg.push_charges(message_body)
+    # elif '6' in message_body:
+    #     msg.end(message_body)
+    # else:
+    #     response_body = 'Please specify one of the options!'
 
     resp = MessagingResponse()
     resp.message(response_body)
@@ -54,12 +52,6 @@ def sms_reply():
 def random():
     number = 1234567890
     message_body = '$10 for gas'
-    msg = Messenger()
-    amount = msg.extract(message_body)
-
-    db = firebase.database()
-    db.child('users').child(str(number)).child('name').set('John Smith')
-    db.child('users').child(str(number)).child('balance').set(amount)
     return 'Hello World'
 
 
